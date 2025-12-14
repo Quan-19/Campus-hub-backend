@@ -1,11 +1,23 @@
-import { Controller, Delete, Param, Post, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { CacheService } from './cache.service';
 import { RequireRole } from '../../api/auth/decorators/require-role.decorator';
 import { UserRole } from '../../api/auth/constants/roles.constants';
+import { JwtAuthGuard } from '../../api/auth/guards/jwt-auth.guard';
 
 @Controller('cache')
+@UseGuards(JwtAuthGuard)
 export class CacheController {
   constructor(private cacheService: CacheService) {}
+
+  /**
+   * Get cache statistics (Admin only)
+   */
+  @Get('stats')
+  @RequireRole(UserRole.ADMIN)
+  async getCacheStats() {
+    const stats = await this.cacheService.getStats();
+    return stats;
+  }
 
   /**
    * Clear specific cache key (Admin only)

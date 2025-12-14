@@ -6,6 +6,7 @@ import { UserRole } from './constants/roles.constants';
 import { HttpCacheInterceptor } from '../../infrastructure/cache/http-cache.interceptor';
 
 @Controller('roles')
+@UseGuards(JwtAuthGuard)
 @UseInterceptors(HttpCacheInterceptor)
 export class RolesController {
   constructor(private rolesService: RolesService) {}

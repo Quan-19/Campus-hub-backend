@@ -7,7 +7,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import * as etag from 'etag';
+import etag from 'etag';
 import { HTTP_CACHE_KEY } from './http-cache.decorator';
 
 /**

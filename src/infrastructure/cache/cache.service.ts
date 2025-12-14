@@ -103,4 +103,29 @@ export class CacheService {
     
     return value;
   }
+
+  /**
+   * Get cache statistics - list all cached keys
+   */
+  async getStats(): Promise<{ keys: string[]; count: number }> {
+    try {
+      const cacheStore = (this.cacheManager as any).store;
+      
+      // For memory-based cache stores
+      if (cacheStore && cacheStore.data) {
+        const keys = Object.keys(cacheStore.data);
+        return {
+          keys,
+          count: keys.length,
+        };
+      }
+
+      // Fallback if structure is different
+      this.logger.warn('Unable to retrieve cache keys - store structure unknown');
+      return { keys: [], count: 0 };
+    } catch (error) {
+      this.logger.error('Error getting cache stats:', error);
+      return { keys: [], count: 0 };
+    }
+  }
 }

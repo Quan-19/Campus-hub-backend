@@ -6,6 +6,7 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { UserRole } from '../auth/constants/roles.constants';
 import { HttpCacheInterceptor } from '../../infrastructure/cache/http-cache.interceptor';
 import { NoCache } from '../../infrastructure/cache/http-cache.decorator';
+import { AssignRoleDto } from './dto/assign-role.dto';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard)
@@ -40,10 +41,14 @@ export class UsersController {
 
   /**
    * Assign role to user (admin only)
+   * Example: POST /users/1/role with body { "role": "ADMIN" }
    */
-  @Post(':id/role/:roleId')
+  @Post(':id/role')
   @RequireRole(UserRole.ADMIN)
-  async assignRole(@Param('id') userId: string, @Param('roleId') roleId: string) {
-    return this.usersService.assignRole(parseInt(userId), parseInt(roleId));
+  async assignRole(
+    @Param('id') userId: string,
+    @Body() assignRoleDto: AssignRoleDto,
+  ) {
+    return this.usersService.assignRoleByName(parseInt(userId), assignRoleDto.role);
   }
 }
